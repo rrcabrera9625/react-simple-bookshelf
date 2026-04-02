@@ -6,8 +6,6 @@ A simple animated React bookshelf component with customizable books, spine patte
 
 https://github.com/user-attachments/assets/e671c603-e091-4166-9438-16798ec9252a
 
-
-  <video src="https://github.com/user-attachments/assets/e671c603-e091-4166-9438-16798ec9252a" autoplay loop muted playsinline width="720"></video>
 </p>
 
 ## Installation
