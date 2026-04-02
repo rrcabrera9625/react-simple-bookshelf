@@ -2,6 +2,8 @@
 
 A simple animated React bookshelf component with customizable books, spine patterns, bilingual support and click-to-reveal detail cards. Built with Framer Motion.
 
+![react-simple-bookshelf preview](https://raw.githubusercontent.com/rrcabrera9625/react-simple-bookshelf/main/preview.gif)
+
 ## Installation
 
 ```bash
@@ -186,6 +188,7 @@ Replace the built-in detail card with your own render function:
 | `patterns` | `PatternFn[]` | built-in 8 | Pattern pool. Pass `[]` to disable globally |
 | `onSelect` | `(book, index) => void` | — | Called on select/deselect |
 | `showDetail` | `boolean` | `true` | Show the detail card |
+| `showShelf` | `boolean` | `true` | Show the shelf plank below books |
 | `renderDetail` | `(book) => ReactNode` | — | Custom detail card renderer |
 | `theme` | `"dark" \| "light"` | `"dark"` | Detail card color theme |
 | `shelfColor` | `string` | `"#3dd6c0"` | Shelf accent line color |
@@ -208,6 +211,7 @@ Replace the built-in detail card with your own render function:
 | `author` | `string` | — | Short author name (shown on spine) |
 | `fullAuthor` | `string` | — | Full author name (shown in detail card) |
 | `pages` | `string` | — | Page edge color (hex) |
+| `textColor` | `string` | `"#ffffff"` | Title and author color on the spine |
 | `w` | `number` | — | Spine width in px. Default: `40` |
 | `h` | `number` | — | Book height in px. Default: `260` |
 | `pattern` | `PatternFn \| false` | — | Custom pattern or `false` to disable |

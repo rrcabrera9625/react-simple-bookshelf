@@ -42,6 +42,8 @@ export interface BookDef {
   // ── Visual ────────────────────────────────────────────────
   /** Page edge color (hex). Defaults to a slightly lighter shade of color */
   pages?: string;
+  /** Text color for title and author on the spine. Default: "#ffffff" */
+  textColor?: string;
   /** Spine width in px. Default: 40 */
   w?: number;
   /** Book height in px. Default: 260 */

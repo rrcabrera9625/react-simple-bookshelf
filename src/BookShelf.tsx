@@ -146,6 +146,7 @@ const BookShelf = ({
           const h = book.h ?? DEFAULT_H;
           const titleH = Math.round(h * 0.58);
           const pattern = resolvedPatterns[i];
+          const textColor = book.textColor ?? "#ffffff";
 
           return (
             <div
@@ -183,10 +184,8 @@ const BookShelf = ({
                   background: "linear-gradient(to right, rgba(0,0,0,0.4) 0%, transparent 25%, transparent 70%, rgba(0,0,0,0.2) 100%)",
                 }} />
                 {/* Spine rules */}
-                <div style={{ position: "absolute", top: 18, left: 8, right: 4, height: 1, backgroundColor: book.accent, opacity: 0.18 }} />
-                <div style={{ position: "absolute", top: 20, left: 8, right: 4, height: 1, backgroundColor: book.accent, opacity: 0.1 }} />
-                <div style={{ position: "absolute", bottom: pattern ? 54 : 18, left: 8, right: 4, height: 1, backgroundColor: book.accent, opacity: 0.18 }} />
-                <div style={{ position: "absolute", bottom: pattern ? 52 : 16, left: 8, right: 4, height: 1, backgroundColor: book.accent, opacity: 0.1 }} />
+                <div style={{ position: "absolute", top: 28, left: 8, right: 4, height: 1, backgroundColor: book.accent, opacity: 0.18 }} />
+                <div style={{ position: "absolute", top: 30, left: 8, right: 4, height: 1, backgroundColor: book.accent, opacity: 0.1 }} />
                 {pattern && (
                   <div style={{
                     position: "absolute", bottom: 6, left: 5, right: 0,
@@ -204,7 +203,7 @@ const BookShelf = ({
                   <span style={{
                     writingMode: "vertical-rl",
                     transform: "rotate(180deg)",
-                    color: "#ffffff",
+                    color: textColor,
                     opacity: isSelected ? 1 : 0.85,
                     fontSize: w >= 48 ? "0.55rem" : "0.45rem",
                     fontWeight: 700,
@@ -224,7 +223,7 @@ const BookShelf = ({
                     <span style={{
                       writingMode: "vertical-rl",
                       transform: "rotate(180deg)",
-                      color: "#ffffff",
+                      color: textColor,
                       opacity: 0.45,
                       fontSize: "0.42rem",
                       fontWeight: 400,
@@ -303,10 +302,8 @@ const BookShelf = ({
                       <div style={{ position: "absolute", top: 0, left: 0, bottom: 0, width: 5, backgroundColor: selected.accent, opacity: 0.9 }} />
                       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(0,0,0,0.4) 0%, transparent 40%, rgba(0,0,0,0.15) 100%)" }} />
                       {/* Spine rules */}
-                      <div style={{ position: "absolute", top: 18, left: 8, right: 4, height: 1, backgroundColor: selected.accent, opacity: 0.18 }} />
-                      <div style={{ position: "absolute", top: 20, left: 8, right: 4, height: 1, backgroundColor: selected.accent, opacity: 0.1 }} />
-                      <div style={{ position: "absolute", bottom: 26, left: 8, right: 4, height: 1, backgroundColor: selected.accent, opacity: 0.18 }} />
-                      <div style={{ position: "absolute", bottom: 24, left: 8, right: 4, height: 1, backgroundColor: selected.accent, opacity: 0.1 }} />
+                      <div style={{ position: "absolute", top: 28, left: 8, right: 4, height: 1, backgroundColor: selected.accent, opacity: 0.18 }} />
+                      <div style={{ position: "absolute", top: 30, left: 8, right: 4, height: 1, backgroundColor: selected.accent, opacity: 0.1 }} />
                       {resolvedPatterns[selectedIdx!] && (
                         <div style={{
                           position: "absolute", bottom: 8, left: 5, right: 0,
