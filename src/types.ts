@@ -2,6 +2,24 @@ import type React from "react";
 
 export type PatternFn = (color: string) => React.ReactElement;
 
+export interface SpringConfig {
+  stiffness?: number;
+  damping?: number;
+}
+
+export interface AnimationConfig {
+  /** Disable all animations. Default: false */
+  disabled?: boolean;
+  /** Spring config for the selected state */
+  selected?: SpringConfig;
+  /** Spring config for the deselected/return state */
+  deselected?: SpringConfig;
+  /** Spring config for hover */
+  hover?: { rotateY?: number; y?: number; scale?: number };
+}
+
+export type Theme = "dark" | "light";
+
 export interface BookDef {
   // ── Required ──────────────────────────────────────────────
   /** Spine background color (hex recommended) */
@@ -52,19 +70,34 @@ export interface BookDef {
 
 export interface BookShelfProps {
   books: BookDef[];
+
+  // ── Controlled mode ───────────────────────────────────────
+  /**
+   * Controlled selected index. When provided the component becomes controlled —
+   * you must update it yourself via onSelect.
+   */
+  selectedIndex?: number | null;
+
+  // ── Language ──────────────────────────────────────────────
   /**
    * Language mode — when "alt", titleAlt/descAlt fields are preferred.
    * Default: "primary"
    */
   lang?: "primary" | "alt";
+
+  // ── Patterns ──────────────────────────────────────────────
   /**
    * Default pattern pool used when a book doesn't specify its own pattern.
    * Cycles round-robin. Pass [] to disable patterns on all books by default.
    * Default: built-in 8 patterns.
    */
   patterns?: PatternFn[];
+
+  // ── Events ────────────────────────────────────────────────
   /** Called when a book is selected or deselected (null) */
   onSelect?: (book: BookDef | null, index: number | null) => void;
+
+  // ── Detail card ───────────────────────────────────────────
   /** Show the detail card below the shelf on selection. Default: true */
   showDetail?: boolean;
   /**
@@ -72,8 +105,20 @@ export interface BookShelfProps {
    * Overrides the built-in card entirely.
    */
   renderDetail?: (book: BookDef) => React.ReactNode;
+
+  // ── Theming ───────────────────────────────────────────────
+  /** Color theme for the detail card background. Default: "dark" */
+  theme?: Theme;
   /** Shelf plank accent color. Default: "#3dd6c0" */
   shelfColor?: string;
+  /** Shelf plank wood/base color. Default: auto */
+  shelfPlankColor?: string;
+
+  // ── Animation ─────────────────────────────────────────────
+  /** Animation configuration. Pass { disabled: true } to turn off all motion. */
+  animationConfig?: AnimationConfig;
+
+  // ── Layout ────────────────────────────────────────────────
   /** Gap between books in px. Default: 2 */
   gap?: number;
   className?: string;
