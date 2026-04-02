@@ -3,7 +3,11 @@
 A simple animated React bookshelf component with customizable books, spine patterns, bilingual support and click-to-reveal detail cards. Built with Framer Motion.
 
 <p align="center">
-  <video src="https://raw.githubusercontent.com/rrcabrera9625/react-simple-bookshelf/main/preview.mov" autoplay loop muted playsinline width="720"></video>
+
+https://github.com/user-attachments/assets/e671c603-e091-4166-9438-16798ec9252a
+
+
+  <video src="https://github.com/user-attachments/assets/e671c603-e091-4166-9438-16798ec9252a" autoplay loop muted playsinline width="720"></video>
 </p>
 
 ## Installation
