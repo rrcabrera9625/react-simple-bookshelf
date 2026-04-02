@@ -8,11 +8,15 @@ const DEFAULT_H = 260;
 
 const BookShelf = ({
   books,
-  lang = "en",
+  lang = "primary",
   patterns = defaultPatterns,
   onSelect,
-  shelfColor,
+  showDetail = true,
+  renderDetail,
+  shelfColor = "#3dd6c0",
+  gap = 2,
   className,
+  style,
 }: BookShelfProps) => {
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
   const shelfRef = useRef<HTMLDivElement>(null);
@@ -21,15 +25,22 @@ const BookShelf = ({
   const selected = selectedIdx !== null ? books[selectedIdx] : null;
 
   const t = (b: BookDef) => ({
-    title: lang === "en" && b.titleEn ? b.titleEn : b.title,
-    desc:  lang === "en" && b.descEn  ? b.descEn  : (b.desc ?? ""),
+    title: lang === "alt" && b.titleAlt ? b.titleAlt : b.title,
+    desc:  lang === "alt" && b.descAlt  ? b.descAlt  : (b.desc ?? ""),
     tag:   b.tag ?? "",
   });
 
   const toggle = (i: number) => {
     const next = selectedIdx === i ? null : i;
     setSelectedIdx(next);
-    onSelect?.(next !== null ? books[next] : null);
+    onSelect?.(next !== null ? books[next] : null, next);
+  };
+
+  const getPattern = (book: BookDef, i: number) => {
+    if (book.pattern === false) return null;
+    if (typeof book.pattern === "function") return book.pattern(book.accent);
+    if (patterns.length === 0) return null;
+    return patterns[i % patterns.length](book.accent);
   };
 
   const onMouseDown = (e: React.MouseEvent) => {
@@ -53,13 +64,13 @@ const BookShelf = ({
   };
 
   return (
-    <div className={className} style={{ fontFamily: "monospace" }}>
+    <div className={className} style={{ fontFamily: "monospace", ...style }}>
       {/* Books row */}
       <div
         ref={shelfRef}
         style={{
           display: "flex",
-          gap: 2,
+          gap,
           overflowX: "auto",
           justifyContent: "center",
           scrollbarWidth: "none",
@@ -78,7 +89,7 @@ const BookShelf = ({
           const w = book.w ?? DEFAULT_W;
           const h = book.h ?? DEFAULT_H;
           const titleH = Math.round(h * 0.58);
-          const patternFn = patterns[i % patterns.length];
+          const pattern = getPattern(book, i);
 
           return (
             <div
@@ -103,26 +114,36 @@ const BookShelf = ({
                     : "3px 5px 14px rgba(0,0,0,0.55)",
                 }}
               >
+                {/* Base */}
                 <div style={{ position: "absolute", inset: 0, backgroundColor: book.color }} />
-                <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 4, backgroundColor: book.pages, opacity: 0.85 }} />
-                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 4, backgroundColor: book.pages, opacity: 0.85 }} />
+                {/* Page strips */}
+                {book.pages && (
+                  <>
+                    <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 4, backgroundColor: book.pages, opacity: 0.85 }} />
+                    <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 4, backgroundColor: book.pages, opacity: 0.85 }} />
+                  </>
+                )}
+                {/* Accent binding */}
                 <div style={{ position: "absolute", top: 0, left: 0, bottom: 0, width: 5, backgroundColor: book.accent, opacity: 0.9 }} />
+                {/* Shading */}
                 <div style={{
                   position: "absolute", inset: 0,
                   background: "linear-gradient(to right, rgba(0,0,0,0.4) 0%, transparent 25%, transparent 70%, rgba(0,0,0,0.2) 100%)",
                 }} />
-                {/* Ornamental pattern */}
-                <div style={{
-                  position: "absolute", bottom: 6, left: 5, right: 0,
-                  display: "flex", justifyContent: "center",
-                  opacity: isSelected ? 0.75 : 0.3,
-                  transition: "opacity 0.2s",
-                }}>
-                  {patternFn(book.accent)}
-                </div>
+                {/* Pattern */}
+                {pattern && (
+                  <div style={{
+                    position: "absolute", bottom: 6, left: 5, right: 0,
+                    display: "flex", justifyContent: "center",
+                    opacity: isSelected ? 0.75 : 0.3,
+                    transition: "opacity 0.2s",
+                  }}>
+                    {pattern}
+                  </div>
+                )}
                 {/* Title + Author */}
                 <div style={{
-                  position: "absolute", top: 8, bottom: 46, left: 5, right: 0,
+                  position: "absolute", top: 8, bottom: pattern ? 46 : 8, left: 5, right: 0,
                   display: "flex", alignItems: "center", justifyContent: "center", gap: 2,
                 }}>
                   <span style={{
@@ -144,19 +165,21 @@ const BookShelf = ({
                   }}>
                     {t(book).title}
                   </span>
-                  <span style={{
-                    writingMode: "vertical-rl",
-                    transform: "rotate(180deg)",
-                    color: "#ffffff",
-                    opacity: 0.45,
-                    fontSize: "0.42rem",
-                    fontWeight: 400,
-                    letterSpacing: "0.04em",
-                    userSelect: "none",
-                    lineHeight: 1.2,
-                  }}>
-                    {book.author}
-                  </span>
+                  {book.author && (
+                    <span style={{
+                      writingMode: "vertical-rl",
+                      transform: "rotate(180deg)",
+                      color: "#ffffff",
+                      opacity: 0.45,
+                      fontSize: "0.42rem",
+                      fontWeight: 400,
+                      letterSpacing: "0.04em",
+                      userSelect: "none",
+                      lineHeight: 1.2,
+                    }}>
+                      {book.author}
+                    </span>
+                  )}
                 </div>
               </motion.div>
             </div>
@@ -168,9 +191,7 @@ const BookShelf = ({
       <div style={{
         marginTop: 12,
         height: 1,
-        background: shelfColor
-          ? `linear-gradient(to right, ${shelfColor}, transparent)`
-          : "linear-gradient(to right, rgba(61,214,192,0.4), rgba(61,214,192,0.1) 60%, transparent)",
+        background: `linear-gradient(to right, ${shelfColor}66, ${shelfColor}1a 60%, transparent)`,
       }} />
       <div style={{
         height: 4,
@@ -180,86 +201,105 @@ const BookShelf = ({
       }} />
 
       {/* Detail card */}
-      <AnimatePresence>
-        {selected && (
-          <motion.div
-            key={selectedIdx}
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
-            style={{ overflow: "hidden" }}
-          >
+      {showDetail && (
+        <AnimatePresence>
+          {selected && (
             <motion.div
-              initial={{ y: -8 }} animate={{ y: 0 }} exit={{ y: -4 }}
-              transition={{ duration: 0.2 }}
-              style={{
-                marginTop: 16,
-                borderRadius: 12,
-                overflow: "hidden",
-                border: `1px solid ${selected.accent}30`,
-                boxShadow: `0 4px 24px rgba(0,0,0,0.5), inset 0 1px 0 ${selected.accent}15`,
-                background: `linear-gradient(160deg, ${selected.color}e0 0%, hsl(220 18% 7%) 55%)`,
-              }}
+              key={selectedIdx}
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+              style={{ overflow: "hidden" }}
             >
-              <div style={{ height: 2, background: `linear-gradient(to right, ${selected.accent}, transparent 60%)` }} />
-              <div style={{ display: "flex", alignItems: "stretch" }}>
-                {/* Mini spine */}
-                <div style={{
-                  width: 42, flexShrink: 0,
-                  position: "relative", overflow: "hidden",
-                  backgroundColor: selected.color,
-                  borderRight: `1px solid ${selected.accent}20`,
-                }}>
-                  <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 4, backgroundColor: selected.pages, opacity: 0.85 }} />
-                  <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 4, backgroundColor: selected.pages, opacity: 0.85 }} />
-                  <div style={{ position: "absolute", top: 0, left: 0, bottom: 0, width: 5, backgroundColor: selected.accent, opacity: 0.9 }} />
-                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(0,0,0,0.4) 0%, transparent 40%, rgba(0,0,0,0.15) 100%)" }} />
-                  <div style={{
-                    position: "absolute", bottom: 8, left: 5, right: 0,
-                    display: "flex", justifyContent: "center",
-                    opacity: 0.6,
-                    transform: "scale(0.65)", transformOrigin: "bottom center",
-                  }}>
-                    {patterns[selectedIdx! % patterns.length](selected.accent)}
-                  </div>
-                </div>
+              {renderDetail ? (
+                <div style={{ marginTop: 16 }}>{renderDetail(selected)}</div>
+              ) : (
+                <motion.div
+                  initial={{ y: -8 }} animate={{ y: 0 }} exit={{ y: -4 }}
+                  transition={{ duration: 0.2 }}
+                  style={{
+                    marginTop: 16,
+                    borderRadius: 12,
+                    overflow: "hidden",
+                    border: `1px solid ${selected.accent}30`,
+                    boxShadow: `0 4px 24px rgba(0,0,0,0.5), inset 0 1px 0 ${selected.accent}15`,
+                    background: `linear-gradient(160deg, ${selected.color}e0 0%, hsl(220 18% 7%) 55%)`,
+                  }}
+                >
+                  <div style={{ height: 2, background: `linear-gradient(to right, ${selected.accent}, transparent 60%)` }} />
+                  <div style={{ display: "flex", alignItems: "stretch" }}>
+                    {/* Mini spine */}
+                    <div style={{
+                      width: 42, flexShrink: 0,
+                      position: "relative", overflow: "hidden",
+                      backgroundColor: selected.color,
+                      borderRight: `1px solid ${selected.accent}20`,
+                    }}>
+                      {selected.pages && (
+                        <>
+                          <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 4, backgroundColor: selected.pages, opacity: 0.85 }} />
+                          <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 4, backgroundColor: selected.pages, opacity: 0.85 }} />
+                        </>
+                      )}
+                      <div style={{ position: "absolute", top: 0, left: 0, bottom: 0, width: 5, backgroundColor: selected.accent, opacity: 0.9 }} />
+                      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(0,0,0,0.4) 0%, transparent 40%, rgba(0,0,0,0.15) 100%)" }} />
+                      {getPattern(selected, selectedIdx!) && (
+                        <div style={{
+                          position: "absolute", bottom: 8, left: 5, right: 0,
+                          display: "flex", justifyContent: "center",
+                          opacity: 0.6,
+                          transform: "scale(0.65)", transformOrigin: "bottom center",
+                        }}>
+                          {getPattern(selected, selectedIdx!)}
+                        </div>
+                      )}
+                    </div>
 
-                {/* Content */}
-                <div style={{ flex: 1, minWidth: 0, padding: "16px 18px" }}>
-                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 4 }}>
-                    <span style={{ fontSize: "0.875rem", fontWeight: 700, color: "#ffffff", lineHeight: 1.3 }}>
-                      {t(selected).title}
-                    </span>
-                    {selected.tag && (
-                      <span style={{
-                        fontSize: "0.6rem", flexShrink: 0,
-                        borderRadius: 999, padding: "2px 8px",
-                        border: "1px solid rgba(255,255,255,0.2)",
-                        color: "#ffffff",
-                        backgroundColor: "rgba(255,255,255,0.07)",
-                      }}>
-                        {t(selected).tag}
-                      </span>
-                    )}
+                    {/* Content */}
+                    <div style={{ flex: 1, minWidth: 0, padding: "16px 18px" }}>
+                      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 4 }}>
+                        <span style={{ fontSize: "0.875rem", fontWeight: 700, color: "#ffffff", lineHeight: 1.3 }}>
+                          {t(selected).title}
+                        </span>
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4, flexShrink: 0 }}>
+                          {selected.tag && (
+                            <span style={{
+                              fontSize: "0.6rem",
+                              borderRadius: 999, padding: "2px 8px",
+                              border: "1px solid rgba(255,255,255,0.2)",
+                              color: "#ffffff",
+                              backgroundColor: "rgba(255,255,255,0.07)",
+                            }}>
+                              {selected.tag}
+                            </span>
+                          )}
+                          {selected.year && (
+                            <span style={{ fontSize: "0.6rem", color: "rgba(255,255,255,0.35)" }}>
+                              {selected.year}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      {(selected.fullAuthor || selected.author) && (
+                        <p style={{ fontSize: "0.7rem", marginBottom: 10, color: `${selected.accent}90` }}>
+                          {selected.fullAuthor ?? selected.author}
+                        </p>
+                      )}
+                      <div style={{ height: 1, background: `linear-gradient(to right, ${selected.accent}30, transparent)`, marginBottom: 10 }} />
+                      {t(selected).desc && (
+                        <p style={{ fontSize: "0.75rem", lineHeight: 1.6, color: "hsl(220 14% 62%)", margin: 0 }}>
+                          {t(selected).desc}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                  {selected.fullAuthor && (
-                    <p style={{ fontSize: "0.7rem", marginBottom: 10, color: `${selected.accent}90` }}>
-                      {selected.fullAuthor}
-                    </p>
-                  )}
-                  <div style={{ height: 1, background: `linear-gradient(to right, ${selected.accent}30, transparent)`, marginBottom: 10 }} />
-                  {t(selected).desc && (
-                    <p style={{ fontSize: "0.75rem", lineHeight: 1.6, color: "hsl(220 14% 62%)" }}>
-                      {t(selected).desc}
-                    </p>
-                  )}
-                </div>
-              </div>
+                </motion.div>
+              )}
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>
+      )}
     </div>
   );
 };
