@@ -232,4 +232,4 @@ Replace the built-in detail card with your own render function:
 
 ## License
 
-MIT
+GNU General Public License v3.0
