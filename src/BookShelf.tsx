@@ -28,6 +28,7 @@ const BookShelf = ({
   showDetail = true,
   renderDetail,
   theme = "dark",
+  showShelf = true,
   shelfColor = "#3dd6c0",
   shelfPlankColor,
   animationConfig = {},
@@ -181,6 +182,11 @@ const BookShelf = ({
                   position: "absolute", inset: 0,
                   background: "linear-gradient(to right, rgba(0,0,0,0.4) 0%, transparent 25%, transparent 70%, rgba(0,0,0,0.2) 100%)",
                 }} />
+                {/* Spine rules */}
+                <div style={{ position: "absolute", top: 18, left: 8, right: 4, height: 1, backgroundColor: book.accent, opacity: 0.18 }} />
+                <div style={{ position: "absolute", top: 20, left: 8, right: 4, height: 1, backgroundColor: book.accent, opacity: 0.1 }} />
+                <div style={{ position: "absolute", bottom: pattern ? 54 : 18, left: 8, right: 4, height: 1, backgroundColor: book.accent, opacity: 0.18 }} />
+                <div style={{ position: "absolute", bottom: pattern ? 52 : 16, left: 8, right: 4, height: 1, backgroundColor: book.accent, opacity: 0.1 }} />
                 {pattern && (
                   <div style={{
                     position: "absolute", bottom: 6, left: 5, right: 0,
@@ -237,16 +243,20 @@ const BookShelf = ({
       </div>
 
       {/* Shelf plank */}
-      <div style={{
-        marginTop: 12, height: 1,
-        background: `linear-gradient(to right, ${shelfColor}66, ${shelfColor}1a 60%, transparent)`,
-      }} />
-      <div style={{
-        height: 4,
-        borderRadius: "0 0 2px 2px",
-        background: shelfPlankColor ? shelfPlankColor : themeVars.plank,
-        boxShadow: "0 2px 6px rgba(0,0,0,0.4)",
-      }} />
+      {showShelf && (
+        <>
+          <div style={{
+            marginTop: 12, height: 1,
+            background: `linear-gradient(to right, ${shelfColor}66, ${shelfColor}1a 60%, transparent)`,
+          }} />
+          <div style={{
+            height: 4,
+            borderRadius: "0 0 2px 2px",
+            background: shelfPlankColor ? shelfPlankColor : themeVars.plank,
+            boxShadow: "0 2px 6px rgba(0,0,0,0.4)",
+          }} />
+        </>
+      )}
 
       {/* Detail card */}
       {showDetail && (
@@ -292,6 +302,11 @@ const BookShelf = ({
                       )}
                       <div style={{ position: "absolute", top: 0, left: 0, bottom: 0, width: 5, backgroundColor: selected.accent, opacity: 0.9 }} />
                       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(0,0,0,0.4) 0%, transparent 40%, rgba(0,0,0,0.15) 100%)" }} />
+                      {/* Spine rules */}
+                      <div style={{ position: "absolute", top: 18, left: 8, right: 4, height: 1, backgroundColor: selected.accent, opacity: 0.18 }} />
+                      <div style={{ position: "absolute", top: 20, left: 8, right: 4, height: 1, backgroundColor: selected.accent, opacity: 0.1 }} />
+                      <div style={{ position: "absolute", bottom: 26, left: 8, right: 4, height: 1, backgroundColor: selected.accent, opacity: 0.18 }} />
+                      <div style={{ position: "absolute", bottom: 24, left: 8, right: 4, height: 1, backgroundColor: selected.accent, opacity: 0.1 }} />
                       {resolvedPatterns[selectedIdx!] && (
                         <div style={{
                           position: "absolute", bottom: 8, left: 5, right: 0,

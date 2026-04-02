@@ -109,6 +109,8 @@ export interface BookShelfProps {
   // ── Theming ───────────────────────────────────────────────
   /** Color theme for the detail card background. Default: "dark" */
   theme?: Theme;
+  /** Show the shelf plank below the books. Default: true */
+  showShelf?: boolean;
   /** Shelf plank accent color. Default: "#3dd6c0" */
   shelfColor?: string;
   /** Shelf plank wood/base color. Default: auto */

@@ -1,6 +1,6 @@
 {
   "name": "react-simple-bookshelf",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A simple animated React bookshelf component with customizable books, spine patterns, bilingual support and click-to-reveal detail cards. Built with Framer Motion.",
   "type": "module",
   "main": "./dist/index.cjs",
